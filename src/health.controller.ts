@@ -6,7 +6,7 @@ import { BotStateService } from './bot/services/bot-state.service';
 export class HealthController {
   constructor(
     private readonly mezonClientService: MezonClientService,
-    private readonly botStateService: BotStateService
+    private readonly botStateService: BotStateService,
   ) {}
 
   @Get()
@@ -39,10 +39,10 @@ export class HealthController {
             details: {
               hasUser: !!client.user,
               hasClans: !!clans,
-              clanCount
-            }
+              clanCount,
+            },
           },
-        }
+        },
       };
     } catch (error) {
       return {

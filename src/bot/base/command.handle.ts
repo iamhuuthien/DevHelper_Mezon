@@ -18,24 +18,31 @@ export class CommandBase implements CommandBaseInterface {
 
       // Sửa lỗi ở đây - kiểm tra args phải là mảng trước khi gọi join
       const argsDisplay = Array.isArray(args) ? args.join(' ') : 'none';
-      this.logger.debug(`Extracted command: ${commandName}, args: ${argsDisplay}`);
+      this.logger.debug(
+        `Extracted command: ${commandName}, args: ${argsDisplay}`,
+      );
 
       const target = CommandStorage.getCommand(commandName as string);
       if (target) {
         this.logger.debug(`Found handler for command: ${commandName}`);
         const command = this.moduleRef.get(target);
-        
+
         if (command) {
           this.logger.debug(`Executing command: ${commandName}`);
           return command.execute(args, message);
         } else {
-          this.logger.warn(`Handler for command ${commandName} could not be instantiated`);
+          this.logger.warn(
+            `Handler for command ${commandName} could not be instantiated`,
+          );
         }
       } else {
         this.logger.warn(`No handler registered for command: ${commandName}`);
       }
     } catch (error) {
-      this.logger.error(`Error executing command: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error executing command: ${error.message}`,
+        error.stack,
+      );
     }
     return [];
   }

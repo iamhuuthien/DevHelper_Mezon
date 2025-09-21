@@ -1,5 +1,8 @@
 import { EMarkdownType } from 'mezon-sdk';
-import { ActionRowComponent, MessageReplyOptions } from '../constants/interfaces';
+import {
+  ActionRowComponent,
+  MessageReplyOptions,
+} from '../constants/interfaces';
 
 /**
  * Gửi reply với components
@@ -16,10 +19,10 @@ export function createReplyOptions(
   content: string,
   markdownRanges: any[] = [],
   components: ActionRowComponent[] = [],
-  embeds: any[] = []
+  embeds: any[] = [],
 ): MessageReplyOptions {
   const options: MessageReplyOptions = {};
-  
+
   if (content) {
     options.t = content;
     if (markdownRanges.length > 0) {
@@ -34,15 +37,15 @@ export function createReplyOptions(
       ];
     }
   }
-  
+
   if (components.length > 0) {
     options.components = components;
   }
-  
+
   if (embeds.length > 0) {
     options.embed = embeds;
   }
-  
+
   return options;
 }
 

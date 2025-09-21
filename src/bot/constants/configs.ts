@@ -8,7 +8,7 @@ export interface EmbedProps {
     url?: string;
   };
   description?: string;
-  thumbnail?: { url: string, height?: string, width?: string };
+  thumbnail?: { url: string; height?: string; width?: string };
   fields?: Array<{
     name: string;
     value: string;
@@ -16,7 +16,7 @@ export interface EmbedProps {
     options?: any[];
     inputs?: {};
   }>;
-  image?: { url: string, height?: string, width?: string };
+  image?: { url: string; height?: string; width?: string };
   timestamp?: string;
   footer?: { text: string; icon_url?: string };
 }
@@ -48,7 +48,7 @@ export enum EmbebButtonType {
   DELETE = 'DELETE',
   SELL = 'SELL',
   DONE = 'DONE',
-  BUY = 'BUY'
+  BUY = 'BUY',
 }
 
 export enum FuncType {
@@ -57,5 +57,5 @@ export enum FuncType {
   LIXI = 'lixi',
   SICBO = 'sicbo',
   TRANSACTION = 'transaction',
-  ALL = 'all'
+  ALL = 'all',
 }

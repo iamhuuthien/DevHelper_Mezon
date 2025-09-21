@@ -4,10 +4,22 @@ import { ChannelMessage } from 'mezon-sdk';
 import { BugService } from 'src/bot/services/bug.service';
 import { MezonClientService } from 'src/mezon/services/mezon-client.service';
 import { getRandomColor } from 'src/bot/utils/helps';
-import { ButtonAction, MessageComponentType, BugStatus, BugSeverity } from 'src/bot/constants/types';
-import { ActionRowComponent, ButtonComponent } from 'src/bot/constants/interfaces';
+import {
+  ButtonAction,
+  MessageComponentType,
+  BugStatus,
+  BugSeverity,
+} from 'src/bot/constants/types';
+import {
+  ActionRowComponent,
+  ButtonComponent,
+} from 'src/bot/constants/interfaces';
 import { parseArgs } from 'src/bot/utils/parse-args';
-import { safeReply, createReplyOptions, createPreMarkdown } from 'src/bot/utils/reply-helpers';
+import {
+  safeReply,
+  createReplyOptions,
+  createPreMarkdown,
+} from 'src/bot/utils/reply-helpers';
 
 @Command('bug')
 export class BugCommand extends CommandMessage {
@@ -48,8 +60,8 @@ export class BugCommand extends CommandMessage {
         messageChannel,
         createReplyOptions(
           `❌ Lỗi: ${error.message}`,
-          createPreMarkdown(`❌ Lỗi: ${error.message}`)
-        )
+          createPreMarkdown(`❌ Lỗi: ${error.message}`),
+        ),
       );
     }
   }
@@ -65,34 +77,40 @@ export class BugCommand extends CommandMessage {
           fields: [
             {
               name: '📝 Tạo báo cáo bug mới',
-              value: '*bug create --title="JWT token không refresh" --desc="Mô tả lỗi" --severity="high"\n\n' +
-                'Mức độ: `low`, `medium`, `high`, `critical`'
+              value:
+                '*bug create --title="JWT token không refresh" --desc="Mô tả lỗi" --severity="high"\n\n' +
+                'Mức độ: `low`, `medium`, `high`, `critical`',
             },
             {
               name: '📋 Liệt kê bug theo trạng thái',
-              value: '*bug list --status="open"\n\n' +
-                'Trạng thái: `open`, `in_progress`, `closed`'
+              value:
+                '*bug list --status="open"\n\n' +
+                'Trạng thái: `open`, `in_progress`, `closed`',
             },
             {
               name: '🔍 Xem chi tiết bug',
-              value: '*bug detail --id=47\n\n' +
-                'Hiển thị đầy đủ thông tin của bug, bao gồm các giải pháp.'
+              value:
+                '*bug detail --id=47\n\n' +
+                'Hiển thị đầy đủ thông tin của bug, bao gồm các giải pháp.',
             },
             {
               name: '✏️ Cập nhật thông tin bug',
-              value: '*bug update --id=47 --status="in_progress" --severity="high"'
+              value:
+                '*bug update --id=47 --status="in_progress" --severity="high"',
             },
             {
               name: '💻 Tham số nâng cao',
-              value: '*bug create --title="Bug XYZ" --steps="1. Đăng nhập\\n2. Đợi token hết hạn"\n' +
-                '*bug create --environment=\'{"os":"Ubuntu 22.04","browser":"Chrome 118"}\''
+              value:
+                '*bug create --title="Bug XYZ" --steps="1. Đăng nhập\\n2. Đợi token hết hạn"\n' +
+                '*bug create --environment=\'{"os":"Ubuntu 22.04","browser":"Chrome 118"}\'',
             },
             {
               name: '📌 Lưu ý quan trọng',
-              value: '• Tham số `--title` là bắt buộc khi tạo bug mới\n' +
+              value:
+                '• Tham số `--title` là bắt buộc khi tạo bug mới\n' +
                 '• Với JSON dùng: `\'{"key":"value"}\'`\n' +
-                '• Xuống dòng trong steps: `\\n`'
-            }
+                '• Xuống dòng trong steps: `\\n`',
+            },
           ],
           footer: {
             text: 'Gõ *bug hoặc *bug help để hiển thị hướng dẫn này',
@@ -102,7 +120,10 @@ export class BugCommand extends CommandMessage {
     });
   }
 
-  private async handleCreate(args: Record<string, string>, messageChannel: any): Promise<any> {
+  private async handleCreate(
+    args: Record<string, string>,
+    messageChannel: any,
+  ): Promise<any> {
     const { title, desc, severity, steps, environment } = args;
 
     if (!title) {
@@ -110,18 +131,23 @@ export class BugCommand extends CommandMessage {
         messageChannel,
         createReplyOptions(
           '❌ Thiếu thông tin: Vui lòng cung cấp --title.',
-          createPreMarkdown('❌ Thiếu thông tin: Vui lòng cung cấp --title.')
-        )
+          createPreMarkdown('❌ Thiếu thông tin: Vui lòng cung cấp --title.'),
+        ),
       );
     }
 
-    if (severity && !Object.values(BugSeverity).includes(severity as BugSeverity)) {
+    if (
+      severity &&
+      !Object.values(BugSeverity).includes(severity as BugSeverity)
+    ) {
       return safeReply(
         messageChannel,
         createReplyOptions(
           `❌ Mức độ nghiêm trọng không hợp lệ. Vui lòng sử dụng một trong các giá trị: ${Object.values(BugSeverity).join(', ')}.`,
-          createPreMarkdown(`❌ Mức độ nghiêm trọng không hợp lệ. Vui lòng sử dụng một trong các giá trị: ${Object.values(BugSeverity).join(', ')}.`)
-        )
+          createPreMarkdown(
+            `❌ Mức độ nghiêm trọng không hợp lệ. Vui lòng sử dụng một trong các giá trị: ${Object.values(BugSeverity).join(', ')}.`,
+          ),
+        ),
       );
     }
 
@@ -134,8 +160,10 @@ export class BugCommand extends CommandMessage {
           messageChannel,
           createReplyOptions(
             `❌ Lỗi: Format JSON không hợp lệ cho environment: ${error.message}`,
-            createPreMarkdown(`❌ Lỗi: Format JSON không hợp lệ cho environment: ${error.message}`)
-          )
+            createPreMarkdown(
+              `❌ Lỗi: Format JSON không hợp lệ cho environment: ${error.message}`,
+            ),
+          ),
         );
       }
     }
@@ -143,7 +171,7 @@ export class BugCommand extends CommandMessage {
     const newBug = await this.bugService.create({
       title,
       description: desc || '',
-      severity: severity as BugSeverity || BugSeverity.MEDIUM,
+      severity: (severity as BugSeverity) || BugSeverity.MEDIUM,
       steps: steps || '',
       environment: parsedEnvironment,
       status: BugStatus.OPEN,
@@ -161,12 +189,17 @@ export class BugCommand extends CommandMessage {
       messageChannel,
       createReplyOptions(
         `✅ Đã báo cáo bug! ID: ${newBug.id}\nMức độ: ${newBug.severity}\nTrạng thái: ${newBug.status}${environmentText}\nSử dụng /bug detail --id=${newBug.id} để xem chi tiết.`,
-        createPreMarkdown(`✅ Đã báo cáo bug! ID: ${newBug.id}\nMức độ: ${newBug.severity}\nTrạng thái: ${newBug.status}${environmentText}\nSử dụng /bug detail --id=${newBug.id} để xem chi tiết.`)
-      )
+        createPreMarkdown(
+          `✅ Đã báo cáo bug! ID: ${newBug.id}\nMức độ: ${newBug.severity}\nTrạng thái: ${newBug.status}${environmentText}\nSử dụng /bug detail --id=${newBug.id} để xem chi tiết.`,
+        ),
+      ),
     );
   }
 
-  private async handleList(args: Record<string, string>, messageChannel: any): Promise<any> {
+  private async handleList(
+    args: Record<string, string>,
+    messageChannel: any,
+  ): Promise<any> {
     const { status } = args;
 
     if (!status || !Object.values(BugStatus).includes(status as BugStatus)) {
@@ -174,8 +207,10 @@ export class BugCommand extends CommandMessage {
         messageChannel,
         createReplyOptions(
           `❌ Thiếu hoặc không hợp lệ: Vui lòng cung cấp --status với một trong các giá trị: ${Object.values(BugStatus).join(', ')}.`,
-          createPreMarkdown(`❌ Thiếu hoặc không hợp lệ: Vui lòng cung cấp --status với một trong các giá trị: ${Object.values(BugStatus).join(', ')}.`)
-        )
+          createPreMarkdown(
+            `❌ Thiếu hoặc không hợp lệ: Vui lòng cung cấp --status với một trong các giá trị: ${Object.values(BugStatus).join(', ')}.`,
+          ),
+        ),
       );
     }
 
@@ -186,8 +221,10 @@ export class BugCommand extends CommandMessage {
         messageChannel,
         createReplyOptions(
           `📋 Không tìm thấy bug nào ở trạng thái "${status}".`,
-          createPreMarkdown(`📋 Không tìm thấy bug nào ở trạng thái "${status}".`)
-        )
+          createPreMarkdown(
+            `📋 Không tìm thấy bug nào ở trạng thái "${status}".`,
+          ),
+        ),
       );
     }
 
@@ -205,14 +242,14 @@ export class BugCommand extends CommandMessage {
 
     return safeReply(
       messageChannel,
-      createReplyOptions(
-        listText,
-        createPreMarkdown(listText)
-      )
+      createReplyOptions(listText, createPreMarkdown(listText)),
     );
   }
 
-  private async handleDetail(args: Record<string, string>, messageChannel: any): Promise<any> {
+  private async handleDetail(
+    args: Record<string, string>,
+    messageChannel: any,
+  ): Promise<any> {
     const { id } = args;
 
     if (!id || isNaN(parseInt(id))) {
@@ -220,8 +257,10 @@ export class BugCommand extends CommandMessage {
         messageChannel,
         createReplyOptions(
           '❌ Thiếu thông tin hoặc định dạng không hợp lệ: Vui lòng cung cấp --id (số).',
-          createPreMarkdown('❌ Thiếu thông tin hoặc định dạng không hợp lệ: Vui lòng cung cấp --id (số).')
-        )
+          createPreMarkdown(
+            '❌ Thiếu thông tin hoặc định dạng không hợp lệ: Vui lòng cung cấp --id (số).',
+          ),
+        ),
       );
     }
 
@@ -237,69 +276,69 @@ export class BugCommand extends CommandMessage {
 
       let solutionsText = 'Chưa có giải pháp';
       if (bug.solutions && bug.solutions.length > 0) {
-        solutionsText = bug.solutions.map((solution) =>
-          `• #${solution.id}: ${solution.title}`
-        ).join('\n');
+        solutionsText = bug.solutions
+          .map((solution) => `• #${solution.id}: ${solution.title}`)
+          .join('\n');
       }
 
-      return safeReply(
-        messageChannel,
-        {
-          embed: [
-            {
-              color: getRandomColor(),
-              title: `🐛 Bug #${bug.id}: "${bug.title}"`,
-              fields: [
-                {
-                  name: 'Mức độ',
-                  value: bug.severity,
-                  inline: true,
-                },
-                {
-                  name: 'Trạng thái',
-                  value: bug.status,
-                  inline: true,
-                },
-                {
-                  name: 'Mô tả',
-                  value: bug.description || '*(Không có mô tả)*',
-                },
-                {
-                  name: 'Các bước tái hiện',
-                  value: bug.steps || '*(Không có các bước tái hiện)*',
-                },
-                {
-                  name: 'Môi trường',
-                  value: environmentText,
-                },
-                {
-                  name: '💡 Giải pháp đã có',
-                  value: solutionsText,
-                },
-                {
-                  name: 'Đã tạo',
-                  value: new Date(bug.createdAt).toLocaleString(),
-                },
-              ],
-              footer: {
-                text: 'DevHelper Bot',
+      return safeReply(messageChannel, {
+        embed: [
+          {
+            color: getRandomColor(),
+            title: `🐛 Bug #${bug.id}: "${bug.title}"`,
+            fields: [
+              {
+                name: 'Mức độ',
+                value: bug.severity,
+                inline: true,
               },
+              {
+                name: 'Trạng thái',
+                value: bug.status,
+                inline: true,
+              },
+              {
+                name: 'Mô tả',
+                value: bug.description || '*(Không có mô tả)*',
+              },
+              {
+                name: 'Các bước tái hiện',
+                value: bug.steps || '*(Không có các bước tái hiện)*',
+              },
+              {
+                name: 'Môi trường',
+                value: environmentText,
+              },
+              {
+                name: '💡 Giải pháp đã có',
+                value: solutionsText,
+              },
+              {
+                name: 'Đã tạo',
+                value: new Date(bug.createdAt).toLocaleString(),
+              },
+            ],
+            footer: {
+              text: 'DevHelper Bot',
             },
-          ],
-        }
-      );
+          },
+        ],
+      });
     } catch (error) {
       return safeReply(
         messageChannel,
         createReplyOptions(
           `❌ Lỗi: ${error.message}`,
-          createPreMarkdown(`❌ Lỗi: ${error.message}`)
-        )
+          createPreMarkdown(`❌ Lỗi: ${error.message}`),
+        ),
       );
     }
   }
 
-  private async handleUpdate(args: Record<string, string>, messageChannel: any): Promise<any> {
+  private async handleUpdate(
+    args: Record<string, string>,
+    messageChannel: any,
+  ): Promise<any> {
     const { id, title, desc, severity, status, steps, environment } = args;
 
     if (!id || isNaN(parseInt(id))) {
@@ -307,21 +346,28 @@ export class BugCommand extends CommandMessage {
         messageChannel,
         createReplyOptions(
           '❌ Thiếu thông tin hoặc định dạng không hợp lệ: Vui lòng cung cấp --id (số).',
-          createPreMarkdown('❌ Thiếu thông tin hoặc định dạng không hợp lệ: Vui lòng cung cấp --id (số).')
-        )
+          createPreMarkdown(
+            '❌ Thiếu thông tin hoặc định dạng không hợp lệ: Vui lòng cung cấp --id (số).',
+          ),
+        ),
       );
     }
 
     try {
       const existingBug = await this.bugService.findById(parseInt(id));
 
-      if (severity && !Object.values(BugSeverity).includes(severity as BugSeverity)) {
+      if (
+        severity &&
+        !Object.values(BugSeverity).includes(severity as BugSeverity)
+      ) {
         return safeReply(
           messageChannel,
           createReplyOptions(
             `❌ Mức độ nghiêm trọng không hợp lệ. Vui lòng sử dụng một trong các giá trị: ${Object.values(BugSeverity).join(', ')}.`,
-            createPreMarkdown(`❌ Mức độ nghiêm trọng không hợp lệ. Vui lòng sử dụng một trong các giá trị: ${Object.values(BugSeverity).join(', ')}.`)
-          )
+            createPreMarkdown(
+              `❌ Mức độ nghiêm trọng không hợp lệ. Vui lòng sử dụng một trong các giá trị: ${Object.values(BugSeverity).join(', ')}.`,
+            ),
+          ),
         );
       }
 
@@ -330,8 +376,10 @@ export class BugCommand extends CommandMessage {
           messageChannel,
           createReplyOptions(
             `❌ Trạng thái không hợp lệ. Vui lòng sử dụng một trong các giá trị: ${Object.values(BugStatus).join(', ')}.`,
-            createPreMarkdown(`❌ Trạng thái không hợp lệ. Vui lòng sử dụng một trong các giá trị: ${Object.values(BugStatus).join(', ')}.`)
-          )
+            createPreMarkdown(
+              `❌ Trạng thái không hợp lệ. Vui lòng sử dụng một trong các giá trị: ${Object.values(BugStatus).join(', ')}.`,
+            ),
+          ),
         );
       }
 
@@ -350,8 +398,10 @@ export class BugCommand extends CommandMessage {
             messageChannel,
             createReplyOptions(
               `❌ Lỗi: Format JSON không hợp lệ cho environment: ${error.message}`,
-              createPreMarkdown(`❌ Lỗi: Format JSON không hợp lệ cho environment: ${error.message}`)
-            )
+              createPreMarkdown(
+                `❌ Lỗi: Format JSON không hợp lệ cho environment: ${error.message}`,
+              ),
+            ),
           );
         }
       }
@@ -361,8 +411,8 @@ export class BugCommand extends CommandMessage {
           messageChannel,
           createReplyOptions(
             '❌ Không có thông tin nào để cập nhật.',
-            createPreMarkdown('❌ Không có thông tin nào để cập nhật.')
-          )
+            createPreMarkdown('❌ Không có thông tin nào để cập nhật.'),
+          ),
         );
       }
 
@@ -385,16 +435,18 @@ export class BugCommand extends CommandMessage {
         messageChannel,
         createReplyOptions(
           `✅ Đã cập nhật bug #${id}:\n\n${changesText}\nSử dụng /bug detail --id=${id} để xem chi tiết.`,
-          createPreMarkdown(`✅ Đã cập nhật bug #${id}:\n\n${changesText}\nSử dụng /bug detail --id=${id} để xem chi tiết.`)
-        )
+          createPreMarkdown(
+            `✅ Đã cập nhật bug #${id}:\n\n${changesText}\nSử dụng /bug detail --id=${id} để xem chi tiết.`,
+          ),
+        ),
       );
     } catch (error) {
       return safeReply(
         messageChannel,
         createReplyOptions(
           `❌ Lỗi: ${error.message}`,
-          createPreMarkdown(`❌ Lỗi: ${error.message}`)
-        )
+          createPreMarkdown(`❌ Lỗi: ${error.message}`),
+        ),
       );
     }
   }

@@ -4,16 +4,17 @@ import { ChannelMessage } from 'mezon-sdk';
 import { SearchService } from 'src/bot/services/search.service';
 import { MezonClientService } from 'src/mezon/services/mezon-client.service';
 import { getRandomColor } from 'src/bot/utils/helps';
-import {
-  ButtonAction,
-  MessageComponentType,
-} from 'src/bot/constants/types';
+import { ButtonAction, MessageComponentType } from 'src/bot/constants/types';
 import {
   ActionRowComponent,
   ButtonComponent,
 } from 'src/bot/constants/interfaces';
 // Thêm import helper reply
-import { safeReply, createReplyOptions, createPreMarkdown } from 'src/bot/utils/reply-helpers';
+import {
+  safeReply,
+  createReplyOptions,
+  createPreMarkdown,
+} from 'src/bot/utils/reply-helpers';
 
 @Command('search')
 export class SearchCommand extends CommandMessage {
@@ -54,35 +55,40 @@ export class SearchCommand extends CommandMessage {
           fields: [
             {
               name: '🔎 Tìm kiếm tổng hợp',
-              value: '*search [từ khóa]\n\n' +
+              value:
+                '*search [từ khóa]\n\n' +
                 'Tìm kiếm tất cả các loại (lệnh, bug, giải pháp) cùng lúc.\n\n' +
-                'Ví dụ: `*search git commit`'
+                'Ví dụ: `*search git commit`',
             },
             {
               name: '📝 Tìm kiếm lệnh',
-              value: '*search commands [từ khóa]\n\n' +
+              value:
+                '*search commands [từ khóa]\n\n' +
                 'Chỉ tìm kiếm trong các lệnh đã lưu.\n\n' +
-                'Ví dụ: `*search commands stash`'
+                'Ví dụ: `*search commands stash`',
             },
             {
               name: '🐛 Tìm kiếm bug',
-              value: '*search bugs [từ khóa]\n\n' +
+              value:
+                '*search bugs [từ khóa]\n\n' +
                 'Chỉ tìm kiếm trong các báo cáo bug.\n\n' +
-                'Ví dụ: `*search bugs token`'
+                'Ví dụ: `*search bugs token`',
             },
             {
               name: '💡 Tìm kiếm giải pháp',
-              value: '*search solutions [từ khóa]\n\n' +
+              value:
+                '*search solutions [từ khóa]\n\n' +
                 'Chỉ tìm kiếm trong các giải pháp đã đề xuất.\n\n' +
-                'Ví dụ: `*search solutions authentication`'
+                'Ví dụ: `*search solutions authentication`',
             },
             {
               name: '📌 Lưu ý khi sử dụng',
-              value: '• Tìm kiếm không phân biệt chữ hoa chữ thường\n' +
+              value:
+                '• Tìm kiếm không phân biệt chữ hoa chữ thường\n' +
                 '• Từ khóa có thể gồm nhiều từ cách nhau bởi dấu cách\n' +
                 '• Kết quả tìm kiếm tổng hợp hiển thị tối đa 5 kết quả cho mỗi loại\n' +
-                '• Tìm kiếm được thực hiện trong tiêu đề, mô tả và các trường liên quan'
-            }
+                '• Tìm kiếm được thực hiện trong tiêu đề, mô tả và các trường liên quan',
+            },
           ],
           footer: {
             text: 'Gõ *search [từ khóa] để bắt đầu tìm kiếm',
@@ -101,8 +107,8 @@ export class SearchCommand extends CommandMessage {
         messageChannel,
         createReplyOptions(
           '❌ Thiếu từ khóa tìm kiếm!',
-          createPreMarkdown('❌ Thiếu từ khóa tìm kiếm!')
-        )
+          createPreMarkdown('❌ Thiếu từ khóa tìm kiếm!'),
+        ),
       );
     }
 
@@ -121,8 +127,8 @@ export class SearchCommand extends CommandMessage {
           messageChannel,
           createReplyOptions(
             `🔍 Không tìm thấy kết quả nào cho "${query}".`,
-            createPreMarkdown(`🔍 Không tìm thấy kết quả nào cho "${query}".`)
-          )
+            createPreMarkdown(`🔍 Không tìm thấy kết quả nào cho "${query}".`),
+          ),
         );
       }
 
@@ -166,18 +172,15 @@ export class SearchCommand extends CommandMessage {
 
       return safeReply(
         messageChannel,
-        createReplyOptions(
-          resultText,
-          createPreMarkdown(resultText)
-        )
+        createReplyOptions(resultText, createPreMarkdown(resultText)),
       );
     } catch (error) {
       return safeReply(
         messageChannel,
         createReplyOptions(
           `❌ Lỗi khi tìm kiếm: ${error.message}`,
-          createPreMarkdown(`❌ Lỗi khi tìm kiếm: ${error.message}`)
-        )
+          createPreMarkdown(`❌ Lỗi khi tìm kiếm: ${error.message}`),
+        ),
       );
     }
   }
@@ -192,8 +195,8 @@ export class SearchCommand extends CommandMessage {
         messageChannel,
         createReplyOptions(
           '❌ Thiếu từ khóa tìm kiếm!',
-          createPreMarkdown('❌ Thiếu từ khóa tìm kiếm!')
-        )
+          createPreMarkdown('❌ Thiếu từ khóa tìm kiếm!'),
+        ),
       );
     }
 
@@ -208,8 +211,10 @@ export class SearchCommand extends CommandMessage {
           messageChannel,
           createReplyOptions(
             `🔍 Không tìm thấy ${this.getTypeDisplayName(type)} nào cho "${query}".`,
-            createPreMarkdown(`🔍 Không tìm thấy ${this.getTypeDisplayName(type)} nào cho "${query}".`)
-          )
+            createPreMarkdown(
+              `🔍 Không tìm thấy ${this.getTypeDisplayName(type)} nào cho "${query}".`,
+            ),
+          ),
         );
       }
 
@@ -229,18 +234,15 @@ export class SearchCommand extends CommandMessage {
 
       return safeReply(
         messageChannel,
-        createReplyOptions(
-          resultText,
-          createPreMarkdown(resultText)
-        )
+        createReplyOptions(resultText, createPreMarkdown(resultText)),
       );
     } catch (error) {
       return safeReply(
         messageChannel,
         createReplyOptions(
           `❌ Lỗi khi tìm kiếm: ${error.message}`,
-          createPreMarkdown(`❌ Lỗi khi tìm kiếm: ${error.message}`)
-        )
+          createPreMarkdown(`❌ Lỗi khi tìm kiếm: ${error.message}`),
+        ),
       );
     }
   }

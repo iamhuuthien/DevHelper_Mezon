@@ -7,5 +7,5 @@ export const TABLE = {
   BLOCK_RUT: 'vibot_blockRut',
   TRANSACTION_P2P: 'vibot_transactionP2P',
   TRANSACTION: 'vibot_transaction',
-  JACKPOT_TRANSACTION: 'vibot_jackPotTransaction'
+  JACKPOT_TRANSACTION: 'vibot_jackPotTransaction',
 };

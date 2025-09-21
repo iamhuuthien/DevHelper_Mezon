@@ -8,7 +8,7 @@ export class AppController {
   constructor(
     private readonly appService: AppService,
     private readonly botGateway: BotGateway,
-    private readonly botStateService: BotStateService
+    private readonly botStateService: BotStateService,
   ) {}
 
   @Get()
@@ -19,14 +19,15 @@ export class AppController {
   // Đã loại bỏ hoàn toàn logic resetBot, chỉ trả về thông báo hướng dẫn
   @Get('/reset-bot')
   async resetBot() {
-    return { 
+    return {
       success: false,
-      message: '🔄 Lệnh reset bot đã bị vô hiệu hóa. Nếu gặp sự cố, hãy khởi động lại service bot trên server.',
+      message:
+        '🔄 Lệnh reset bot đã bị vô hiệu hóa. Nếu gặp sự cố, hãy khởi động lại service bot trên server.',
       timestamp: new Date().toISOString(),
-      status: this.botStateService.getState()
+      status: this.botStateService.getState(),
     };
   }
-  
+
   @Post('/deactivate-bot')
   async deactivateBot(@Body() body: { reason?: string }) {
     try {
@@ -36,36 +37,38 @@ export class AppController {
         success: true,
         message: `Bot deactivated: ${reason}`,
         timestamp: new Date().toISOString(),
-        status: this.botStateService.getState()
+        status: this.botStateService.getState(),
       };
     } catch (error) {
-      return { 
-        success: false, 
+      return {
+        success: false,
         error: error.message,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
     }
   }
-  
+
   @Post('/activate-bot')
   async activateBot() {
     try {
       const success = await this.botGateway.activateBot();
       return {
         success,
-        message: success ? 'Bot activated successfully' : 'Bot activation failed',
+        message: success
+          ? 'Bot activated successfully'
+          : 'Bot activation failed',
         timestamp: new Date().toISOString(),
-        status: this.botStateService.getState()
+        status: this.botStateService.getState(),
       };
     } catch (error) {
-      return { 
-        success: false, 
+      return {
+        success: false,
         error: error.message,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
     }
   }
-  
+
   @Get('/bot-status')
   async getBotStatus() {
     try {
@@ -74,7 +77,7 @@ export class AppController {
       return {
         status: 'error',
         error: error.message,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
     }
   }

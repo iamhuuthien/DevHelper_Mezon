@@ -56,7 +56,11 @@ export interface TextInputComponent {
 }
 
 // Interface tổng thể cho Message Components
-export type MessageComponent = ActionRowComponent | ButtonComponent | SelectMenuComponent | TextInputComponent;
+export type MessageComponent =
+  | ActionRowComponent
+  | ButtonComponent
+  | SelectMenuComponent
+  | TextInputComponent;
 
 // Interface cho MessageReplyOptions
 export interface MessageReplyOptions {

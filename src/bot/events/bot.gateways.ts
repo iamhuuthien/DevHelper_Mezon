@@ -3,7 +3,11 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { MezonClient, Events } from 'mezon-sdk';
 import { MezonClientService } from 'src/mezon/services/mezon-client.service';
 import { BotStateService } from '../services/bot-state.service';
-import { safeReply, createReplyOptions, createPreMarkdown } from '../utils/reply-helpers';
+import {
+  safeReply,
+  createReplyOptions,
+  createPreMarkdown,
+} from '../utils/reply-helpers';
 
 @Injectable()
 export class BotGateway {
@@ -19,7 +23,7 @@ export class BotGateway {
   constructor(
     private readonly clientService: MezonClientService,
     private eventEmitter: EventEmitter2,
-    private botStateService: BotStateService
+    private botStateService: BotStateService,
   ) {
     this.client = this.clientService.getClient();
   }
@@ -31,7 +35,9 @@ export class BotGateway {
   async initEvent() {
     // Đảm bảo chỉ đăng ký event 1 lần duy nhất
     if (this.isEventInitialized) {
-      this.logger.warn('Bot events already initialized, skipping duplicate registration.');
+      this.logger.warn(
+        'Bot events already initialized, skipping duplicate registration.',
+      );
       return;
     }
     this.isEventInitialized = true;
@@ -51,8 +57,12 @@ export class BotGateway {
   private handleChannelMessage(message: any) {
     if (!message || !message.content) return;
     if (
-      (message.sender_id && this.client.user && message.sender_id === this.client.user.id) ||
-      (message.author_id && this.client.user && message.author_id === this.client.user.id)
+      (message.sender_id &&
+        this.client.user &&
+        message.sender_id === this.client.user.id) ||
+      (message.author_id &&
+        this.client.user &&
+        message.author_id === this.client.user.id)
     ) {
       this.logger.debug('Skipping message sent by bot itself');
       return;
@@ -61,17 +71,25 @@ export class BotGateway {
     const content = message?.content?.t || '';
     const shortContent = content.substring(0, 30) || '';
     const clanId = message.clan_id || message.server_id;
-    this.logger.debug(`[RECEIVE] Message: "${shortContent}"... (clan_id: ${clanId}, channel: ${message.channel_id})`);
+    this.logger.debug(
+      `[RECEIVE] Message: "${shortContent}"... (clan_id: ${clanId}, channel: ${message.channel_id})`,
+    );
 
     const validPrefixes = ['*', '/', '\\'];
-    const firstChar = (content.trim())[0];
+    const firstChar = content.trim()[0];
     const hasValidPrefix = validPrefixes.includes(firstChar);
 
     // Luôn kiểm tra lệnh active trước, ngay cả khi bot không active
-    if (content.startsWith('*activate') || content.startsWith('/activate') ||
-      content.startsWith('\\activate') || content === 'activate' ||
-      content.startsWith('activate ')) {
-      this.logger.log(`[EMIT] Activation command received from clan_id: ${clanId}`);
+    if (
+      content.startsWith('*activate') ||
+      content.startsWith('/activate') ||
+      content.startsWith('\\activate') ||
+      content === 'activate' ||
+      content.startsWith('activate ')
+    ) {
+      this.logger.log(
+        `[EMIT] Activation command received from clan_id: ${clanId}`,
+      );
       this.botStateService.setActive();
       this.sendActivationConfirmation(message);
       this.eventEmitter.emit(Events.ChannelMessage, message);
@@ -79,43 +97,67 @@ export class BotGateway {
     }
 
     // Kiểm tra lệnh resetbot để buộc khởi động lại
-    if (content.startsWith('*resetbot') || content.startsWith('/resetbot') ||
-      content.startsWith('\\resetbot') || content === 'resetbot') {
+    if (
+      content.startsWith('*resetbot') ||
+      content.startsWith('/resetbot') ||
+      content.startsWith('\\resetbot') ||
+      content === 'resetbot'
+    ) {
       this.logger.log('Reset command received, but reset logic is disabled.');
       this.sendResetConfirmation(message);
       return;
     }
 
     if (!hasValidPrefix) {
-      this.logger.debug(`Skipping message without valid prefix: ${shortContent}`);
+      this.logger.debug(
+        `Skipping message without valid prefix: ${shortContent}`,
+      );
       return;
     }
 
     // Luôn xử lý các lệnh quản lý trạng thái của bot
-    if (content.startsWith('*deactivate') || content.startsWith('/deactivate') ||
-      content.startsWith('\\deactivate') || content === 'deactivate' ||
-      content.startsWith('deactivate ')) {
-      this.logger.log(`[EMIT] Deactivate command received from clan_id: ${clanId}`);
+    if (
+      content.startsWith('*deactivate') ||
+      content.startsWith('/deactivate') ||
+      content.startsWith('\\deactivate') ||
+      content === 'deactivate' ||
+      content.startsWith('deactivate ')
+    ) {
+      this.logger.log(
+        `[EMIT] Deactivate command received from clan_id: ${clanId}`,
+      );
       this.eventEmitter.emit(Events.ChannelMessage, message);
       return;
     }
 
-    if (content.startsWith('*botstatus') || content.startsWith('/botstatus') ||
-      content.startsWith('\\botstatus') || content === 'botstatus' ||
-      content.startsWith('botstatus ')) {
-      this.logger.log(`[EMIT] Botstatus command received from clan_id: ${clanId}`);
+    if (
+      content.startsWith('*botstatus') ||
+      content.startsWith('/botstatus') ||
+      content.startsWith('\\botstatus') ||
+      content === 'botstatus' ||
+      content.startsWith('botstatus ')
+    ) {
+      this.logger.log(
+        `[EMIT] Botstatus command received from clan_id: ${clanId}`,
+      );
       this.eventEmitter.emit(Events.ChannelMessage, message);
       return;
     }
 
-    if (content.startsWith('*bot ') || content.startsWith('/bot ') || content.startsWith('\\bot ')) {
+    if (
+      content.startsWith('*bot ') ||
+      content.startsWith('/bot ') ||
+      content.startsWith('\\bot ')
+    ) {
       this.logger.log(`[EMIT] Bot command received from clan_id: ${clanId}`);
       this.eventEmitter.emit(Events.ChannelMessage, message);
       return;
     }
 
     if (this.botStateService.isActive()) {
-      this.logger.log(`[EMIT] Forwarding command to event emitter from clan_id: ${clanId}`);
+      this.logger.log(
+        `[EMIT] Forwarding command to event emitter from clan_id: ${clanId}`,
+      );
       this.eventEmitter.emit(Events.ChannelMessage, message);
     }
   }
@@ -125,7 +167,9 @@ export class BotGateway {
       this.logger.debug('Received invalid button click');
       return;
     }
-    this.logger.debug(`Button click: ${message.custom_id} (channel: ${message.channel_id})`);
+    this.logger.debug(
+      `Button click: ${message.custom_id} (channel: ${message.channel_id})`,
+    );
     if (this.botStateService.isActive()) {
       this.eventEmitter.emit(Events.MessageButtonClicked, message);
     }
@@ -136,7 +180,11 @@ export class BotGateway {
     this.botStateService.setError(error.message);
   }
 
-  private async sendChannelMessage(clanId: string, channelId: string, content: any) {
+  private async sendChannelMessage(
+    clanId: string,
+    channelId: string,
+    content: any,
+  ) {
     try {
       let sent = false;
       if ((this.client as any).clans) {
@@ -165,19 +213,29 @@ export class BotGateway {
   private async sendResetConfirmation(message: any) {
     const clanId = message.clan_id || message.server_id;
     const channelId = message.channel_id;
-    await this.sendChannelMessage(clanId, channelId, createReplyOptions(
-      `✅ Bot đã nhận lệnh reset (không còn tự động reset/reconnect).`,
-      createPreMarkdown(`✅ Bot đã nhận lệnh reset (không còn tự động reset/reconnect).`)
-    ));
+    await this.sendChannelMessage(
+      clanId,
+      channelId,
+      createReplyOptions(
+        `✅ Bot đã nhận lệnh reset (không còn tự động reset/reconnect).`,
+        createPreMarkdown(
+          `✅ Bot đã nhận lệnh reset (không còn tự động reset/reconnect).`,
+        ),
+      ),
+    );
   }
 
   private async sendActivationConfirmation(message: any) {
     const clanId = message.clan_id || message.server_id;
     const channelId = message.channel_id;
-    await this.sendChannelMessage(clanId, channelId, createReplyOptions(
-      `✅ Bot đã được kích hoạt và sẵn sàng nhận lệnh!`,
-      createPreMarkdown(`✅ Bot đã được kích hoạt và sẵn sàng nhận lệnh!`)
-    ));
+    await this.sendChannelMessage(
+      clanId,
+      channelId,
+      createReplyOptions(
+        `✅ Bot đã được kích hoạt và sẵn sàng nhận lệnh!`,
+        createPreMarkdown(`✅ Bot đã được kích hoạt và sẵn sàng nhận lệnh!`),
+      ),
+    );
   }
 
   getBotStatus() {
@@ -203,7 +261,7 @@ export class BotGateway {
     return {
       ...this.botStateService.getStatusDetails(),
       connectionInfo: clientInfo,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
   }
 

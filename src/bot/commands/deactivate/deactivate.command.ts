@@ -12,7 +12,7 @@ export class DeactivateCommand extends CommandMessage {
   constructor(
     clientService: MezonClientService,
     private botStateService: BotStateService,
-    private botGateway: BotGateway
+    private botGateway: BotGateway,
   ) {
     super(clientService);
   }
@@ -28,13 +28,13 @@ export class DeactivateCommand extends CommandMessage {
         mk: [{ type: EMarkdownType.PRE, s: 0, e: 38 }],
       });
     }
-    
+
     // Extract reason if provided
     const reason = args.join(' ') || 'Được tắt bằng lệnh thủ công';
-    
+
     // Deactivate the bot
     await this.botGateway.deactivateBot(reason);
-    
+
     // Send confirmation
     return messageChannel.reply({
       t: `🛑 Bot đã tạm dừng hoạt động.\nLý do: ${reason}\n\nGõ *activate hoặc /bot on để kích hoạt lại bot.`,

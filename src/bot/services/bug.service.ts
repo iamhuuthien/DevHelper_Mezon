@@ -16,9 +16,9 @@ export class BugService {
   }
 
   async findById(id: number): Promise<Bug> {
-    const bug = await this.bugRepository.findOne({ 
+    const bug = await this.bugRepository.findOne({
       where: { id },
-      relations: ['solutions']
+      relations: ['solutions'],
     });
     if (!bug) {
       throw new Error(`Bug with id ${id} not found`);

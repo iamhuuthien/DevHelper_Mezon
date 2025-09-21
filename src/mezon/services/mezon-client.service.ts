@@ -13,7 +13,9 @@ export class MezonClientService {
 
     // Đăng ký event handler NGAY SAU khi khởi tạo, TRƯỚC khi login
     this.client.on(Events.ChannelMessage, (message) => {
-      this.logger.debug(`[Mezon] Received ChannelMessage: ${JSON.stringify(message)}`);
+      this.logger.debug(
+        `[Mezon] Received ChannelMessage: ${JSON.stringify(message)}`,
+      );
       // Nếu dùng EventEmitter2, emit tại đây
       // this.eventEmitter.emit(Events.ChannelMessage, message);
     });
@@ -50,10 +52,12 @@ export class MezonClientService {
       const clientInfo = {
         hasClans: !!clans,
         userId: this.client.user?.id,
-        clanCount
+        clanCount,
       };
 
-      this.logger.log(`Client state after login: ${JSON.stringify(clientInfo)}`);
+      this.logger.log(
+        `Client state after login: ${JSON.stringify(clientInfo)}`,
+      );
       return true;
     } catch (error) {
       this.logger.error(`Authentication error: ${error.message}`);

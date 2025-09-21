@@ -23,7 +23,14 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+**DevHelper Mezon Bot** - A comprehensive development assistance bot for the Mezon platform that helps developers manage commands, bugs, and solutions efficiently.
+
+**Team Size:** 1 Member
+
+**Technologies:**
+• **Backend:** NestJS, TypeScript, Mezon SDK, TypeORM, PostgreSQL, SQLite, Node.js, Express.js, RxJS, Joi, Axios, Cron Jobs
+• **Frontend:** N/A (Bot application)  
+• **Project Management:** Git, GitHub, NPM/Yarn, ESLint, Prettier, Jest Testing Framework
 
 ## Project setup
 

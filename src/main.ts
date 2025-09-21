@@ -8,13 +8,13 @@ import { Logger } from '@nestjs/common';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
-  
+
   try {
     // Enable all log levels for more detailed debugging
     const app = await NestFactory.create(AppModule, {
       logger: ['error', 'warn', 'log', 'debug', 'verbose'],
     });
-    
+
     // Thêm middleware bắt lỗi toàn cục
     app.use((err, req, res, next) => {
       logger.error(`Global error handler: ${err.message}`, err.stack);
@@ -23,11 +23,11 @@ async function bootstrap() {
         message: err.message,
       });
     });
-    
+
     const port = process.env.PORT || 4000;
     await app.listen(port);
     logger.log(`Application started on port ${port}`);
-    
+
     // Khởi tạo bot gateway sau khi app đã khởi động xong
     try {
       const bot = app.get(BotGateway);
@@ -35,7 +35,10 @@ async function bootstrap() {
       logger.log('Bot gateway initialization completed');
       // Không còn logic resetBot hoặc kiểm tra định kỳ trạng thái bot
     } catch (botError) {
-      logger.error(`Error initializing bot gateway: ${botError.message}`, botError.stack);
+      logger.error(
+        `Error initializing bot gateway: ${botError.message}`,
+        botError.stack,
+      );
       // Có thể thử lại nếu muốn, nhưng không còn resetBot
     }
   } catch (error) {

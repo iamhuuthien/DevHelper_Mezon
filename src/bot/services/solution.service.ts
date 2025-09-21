@@ -16,17 +16,17 @@ export class SolutionService {
   }
 
   async findById(id: number): Promise<Solution> {
-  const solution = await this.solutionRepository.findOne({
-    where: { id },
-    relations: ['bug'],
-  });
-  
-  if (!solution) {
-    throw new Error(`Solution with id ${id} not found`);
+    const solution = await this.solutionRepository.findOne({
+      where: { id },
+      relations: ['bug'],
+    });
+
+    if (!solution) {
+      throw new Error(`Solution with id ${id} not found`);
+    }
+
+    return solution;
   }
-  
-  return solution;
-}
 
   async listByBugId(bugId: number): Promise<Solution[]> {
     return this.solutionRepository.find({

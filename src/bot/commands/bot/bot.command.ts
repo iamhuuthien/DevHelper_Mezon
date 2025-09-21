@@ -7,7 +7,11 @@ import { BotGateway } from '../../events/bot.gateways';
 import { Injectable, Logger } from '@nestjs/common';
 import { getRandomColor } from '../../utils/helps';
 // Thêm helper reply
-import { safeReply, createReplyOptions, createPreMarkdown } from 'src/bot/utils/reply-helpers';
+import {
+  safeReply,
+  createReplyOptions,
+  createPreMarkdown,
+} from 'src/bot/utils/reply-helpers';
 
 @Command('bot')
 @Injectable()
@@ -17,7 +21,7 @@ export class BotCommand extends CommandMessage {
   constructor(
     clientService: MezonClientService,
     private botStateService: BotStateService,
-    private botGateway: BotGateway
+    private botGateway: BotGateway,
   ) {
     super(clientService);
   }
@@ -53,8 +57,8 @@ export class BotCommand extends CommandMessage {
         messageChannel,
         createReplyOptions(
           `❌ Lỗi: ${error.message}`,
-          createPreMarkdown(`❌ Lỗi: ${error.message}`)
-        )
+          createPreMarkdown(`❌ Lỗi: ${error.message}`),
+        ),
       );
     }
   }
@@ -70,23 +74,21 @@ export class BotCommand extends CommandMessage {
           fields: [
             {
               name: '/bot status',
-              value: 'Hiển thị trạng thái hiện tại của bot\n' +
+              value:
+                'Hiển thị trạng thái hiện tại của bot\n' +
                 'Ví dụ: `/bot status`',
             },
             {
               name: '/bot deactivate (hoặc /bot off)',
-              value: 'Tắt bot tạm thời\n' +
-                'Ví dụ: `/bot off "Bảo trì"`',
+              value: 'Tắt bot tạm thời\n' + 'Ví dụ: `/bot off "Bảo trì"`',
             },
             {
               name: '/bot activate (hoặc /bot on)',
-              value: 'Kích hoạt lại bot sau khi tắt\n' +
-                'Ví dụ: `/bot on`',
+              value: 'Kích hoạt lại bot sau khi tắt\n' + 'Ví dụ: `/bot on`',
             },
             {
               name: '/bot reset',
-              value: 'Khởi động lại bot (reconnect)\n' +
-                'Ví dụ: `/bot reset`',
+              value: 'Khởi động lại bot (reconnect)\n' + 'Ví dụ: `/bot reset`',
             },
           ],
           footer: {
@@ -97,11 +99,16 @@ export class BotCommand extends CommandMessage {
     });
   }
 
-private async handleStatus(messageChannel: any): Promise<any> {
+  private async handleStatus(messageChannel: any): Promise<any> {
     const status = this.botGateway.getBotStatus();
-    const stateEmoji = status.state === 'active' ? '🟢' :
-      status.state === 'inactive' ? '🔴' :
-        status.state === 'reconnecting' ? '🟡' : '🟠';
+    const stateEmoji =
+      status.state === 'active'
+        ? '🟢'
+        : status.state === 'inactive'
+          ? '🔴'
+          : status.state === 'reconnecting'
+            ? '🟡'
+            : '🟠';
 
     const stateSince = new Date(status.since).toLocaleString();
 
@@ -126,12 +133,14 @@ private async handleStatus(messageChannel: any): Promise<any> {
               value: String(status.connectionInfo.clanCount || 0),
               inline: true,
             },
-            ...(status.state !== 'active' ? [
-              {
-                name: 'Lý do không hoạt động',
-                value: status.inactiveReason || 'Không rõ',
-              }
-            ] : []),
+            ...(status.state !== 'active'
+              ? [
+                  {
+                    name: 'Lý do không hoạt động',
+                    value: status.inactiveReason || 'Không rõ',
+                  },
+                ]
+              : []),
             {
               name: 'Lần thử kết nối gần nhất',
               value: `${status.lastReconnectAttempt}/${status.maxReconnectAttempts}`,
@@ -141,7 +150,7 @@ private async handleStatus(messageChannel: any): Promise<any> {
               name: 'Command prefix',
               value: status.commandPrefix,
               inline: true,
-            }
+            },
           ],
           footer: {
             text: `DevHelper Bot - Last updated: ${new Date().toLocaleString()}`,
@@ -150,15 +159,18 @@ private async handleStatus(messageChannel: any): Promise<any> {
       ],
     });
   }
-  
-  private async handleDeactivate(args: string[], messageChannel: any): Promise<any> {
+
+  private async handleDeactivate(
+    args: string[],
+    messageChannel: any,
+  ): Promise<any> {
     if (!this.botStateService.isActive()) {
       return safeReply(
         messageChannel,
         createReplyOptions(
           '❌ Bot đã ở trạng thái không hoạt động.',
-          createPreMarkdown('❌ Bot đã ở trạng thái không hoạt động.')
-        )
+          createPreMarkdown('❌ Bot đã ở trạng thái không hoạt động.'),
+        ),
       );
     }
 
@@ -169,8 +181,10 @@ private async handleStatus(messageChannel: any): Promise<any> {
       messageChannel,
       createReplyOptions(
         `🛑 Bot đã tạm dừng hoạt động.\nLý do: ${reason}\n\nGõ *activate hoặc /bot on để kích hoạt lại bot.`,
-        createPreMarkdown(`🛑 Bot đã tạm dừng hoạt động.\nLý do: ${reason}\n\nGõ *activate hoặc /bot on để kích hoạt lại bot.`)
-      )
+        createPreMarkdown(
+          `🛑 Bot đã tạm dừng hoạt động.\nLý do: ${reason}\n\nGõ *activate hoặc /bot on để kích hoạt lại bot.`,
+        ),
+      ),
     );
   }
 
@@ -180,8 +194,8 @@ private async handleStatus(messageChannel: any): Promise<any> {
         messageChannel,
         createReplyOptions(
           '✅ Bot đã đang hoạt động.',
-          createPreMarkdown('✅ Bot đã đang hoạt động.')
-        )
+          createPreMarkdown('✅ Bot đã đang hoạt động.'),
+        ),
       );
     }
 
@@ -192,16 +206,18 @@ private async handleStatus(messageChannel: any): Promise<any> {
         messageChannel,
         createReplyOptions(
           '✅ Bot đã được kích hoạt và sẵn sàng nhận lệnh!',
-          createPreMarkdown('✅ Bot đã được kích hoạt và sẵn sàng nhận lệnh!')
-        )
+          createPreMarkdown('✅ Bot đã được kích hoạt và sẵn sàng nhận lệnh!'),
+        ),
       );
     } else {
       return safeReply(
         messageChannel,
         createReplyOptions(
           `❌ Kích hoạt bot thất bại: ${this.botStateService.getInactiveReason()}`,
-          createPreMarkdown(`❌ Kích hoạt bot thất bại: ${this.botStateService.getInactiveReason()}`)
-        )
+          createPreMarkdown(
+            `❌ Kích hoạt bot thất bại: ${this.botStateService.getInactiveReason()}`,
+          ),
+        ),
       );
     }
   }
@@ -212,8 +228,10 @@ private async handleStatus(messageChannel: any): Promise<any> {
       messageChannel,
       createReplyOptions(
         '🔄 Lệnh reset bot đã bị vô hiệu hóa. Nếu gặp sự cố, hãy khởi động lại service bot trên server.',
-        createPreMarkdown('🔄 Lệnh reset bot đã bị vô hiệu hóa. Nếu gặp sự cố, hãy khởi động lại service bot trên server.')
-      )
+        createPreMarkdown(
+          '🔄 Lệnh reset bot đã bị vô hiệu hóa. Nếu gặp sự cố, hãy khởi động lại service bot trên server.',
+        ),
+      ),
     );
   }
 }

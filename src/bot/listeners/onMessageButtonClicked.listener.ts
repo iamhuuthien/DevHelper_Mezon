@@ -6,18 +6,26 @@ import { BugService } from '../services/bug.service';
 import { SolutionService } from '../services/solution.service';
 import { SearchService } from '../services/search.service';
 import { MezonClientService } from 'src/mezon/services/mezon-client.service';
-import { ButtonStyle, MessageComponentType, ButtonAction } from '../constants/types';
+import {
+  ButtonStyle,
+  MessageComponentType,
+  ButtonAction,
+} from '../constants/types';
 import { ActionRowComponent, ButtonComponent } from '../constants/interfaces';
 import { getRandomColor } from '../utils/helps';
 import { createButton, createActionRow } from '../utils/component-helpers';
 import { BotStateService } from '../services/bot-state.service';
-import { createPreMarkdown, safeReply, createReplyOptions } from '../utils/reply-helpers';
+import {
+  createPreMarkdown,
+  safeReply,
+  createReplyOptions,
+} from '../utils/reply-helpers';
 
 // Define the expected event payload type if not exported by mezon-sdk
 interface MessageButtonClicked {
   custom_id: string;
-  clan_id?: string;     // Keep for backward compatibility
-  server_id: string;    // Add this field
+  clan_id?: string; // Keep for backward compatibility
+  server_id: string; // Add this field
   channel_id: string;
   message_id: string;
   user_id: string;
@@ -33,17 +41,19 @@ export class ListenerMessageButtonClicked {
     private readonly solutionService: SolutionService,
     private readonly searchService: SearchService,
     private readonly clientService: MezonClientService,
-    private readonly botStateService: BotStateService
+    private readonly botStateService: BotStateService,
   ) {}
 
   @OnEvent(Events.MessageButtonClicked) // FIX: Removed the extra @ symbol
   async handleButtonClick(event: MessageButtonClicked) {
     // Skip if bot is inactive
     if (!this.botStateService.isActive()) {
-      this.logger.debug(`Button click ignored - bot is inactive: ${event.custom_id}`);
+      this.logger.debug(
+        `Button click ignored - bot is inactive: ${event.custom_id}`,
+      );
       return;
     }
-    
+
     try {
       const customId = event.custom_id;
       this.logger.debug(`Processing button click: ${customId}`);
@@ -56,32 +66,38 @@ export class ListenerMessageButtonClicked {
 
       // Get client and channel to respond
       const client = this.clientService.getClient();
-      
+
       // Check server/channel safely
       let channel;
       let message;
-      
+
       if (client?.servers) {
         const server = client.servers.get(event.server_id);
         if (server) {
           channel = await server.channels.fetch(event.channel_id);
         }
       } else if ((client as any)?.clans) {
-        const clan = (client as any).clans.get(event.clan_id || event.server_id);
+        const clan = (client as any).clans.get(
+          event.clan_id || event.server_id,
+        );
         if (clan) {
           channel = await clan.channels.fetch(event.channel_id);
         }
       }
-      
+
       if (!channel) {
-        this.logger.warn(`Channel not found for button click: ${event.channel_id}`);
+        this.logger.warn(
+          `Channel not found for button click: ${event.channel_id}`,
+        );
         return;
       }
-      
+
       message = await channel.messages.fetch(event.message_id);
 
       if (!message) {
-        this.logger.warn(`Message not found for button click: ${event.message_id}`);
+        this.logger.warn(
+          `Message not found for button click: ${event.message_id}`,
+        );
         return;
       }
 
@@ -119,12 +135,15 @@ export class ListenerMessageButtonClicked {
           this.logger.warn(`Unknown button action: ${action}`);
       }
     } catch (error) {
-      this.logger.error(`Error handling button click: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error handling button click: ${error.message}`,
+        error.stack,
+      );
     }
   }
 
   // Helper methods để hiển thị chi tiết
-    private async handleViewDetail(type: string, id: string, message: any) {
+  private async handleViewDetail(type: string, id: string, message: any) {
     try {
       switch (type) {
         case 'command':
@@ -151,8 +170,8 @@ export class ListenerMessageButtonClicked {
         message,
         createReplyOptions(
           `❌ Lỗi: ${error.message}`,
-          createPreMarkdown(`❌ Lỗi: ${error.message}`)
-        )
+          createPreMarkdown(`❌ Lỗi: ${error.message}`),
+        ),
       );
     }
   }
@@ -184,8 +203,8 @@ export class ListenerMessageButtonClicked {
         message,
         createReplyOptions(
           `❌ Lỗi: ${error.message}`,
-          createPreMarkdown(`❌ Lỗi: ${error.message}`)
-        )
+          createPreMarkdown(`❌ Lỗi: ${error.message}`),
+        ),
       );
     }
   }
@@ -196,28 +215,27 @@ export class ListenerMessageButtonClicked {
         const command = await this.commandService.findById(parseInt(id));
         await this.commandService.softDelete(parseInt(id));
 
-        await safeReply(
-          message,
-          {
-            ...createReplyOptions(
+        await safeReply(message, {
+          ...createReplyOptions(
+            `🗑️ Đã xóa lệnh #${id} "${command.title}"\nSử dụng /command restore --id=${id} để khôi phục.`,
+            createPreMarkdown(
               `🗑️ Đã xóa lệnh #${id} "${command.title}"\nSử dụng /command restore --id=${id} để khôi phục.`,
-              createPreMarkdown(`🗑️ Đã xóa lệnh #${id} "${command.title}"\nSử dụng /command restore --id=${id} để khôi phục.`)
             ),
-            components: [
-              {
-                type: MessageComponentType.ACTION_ROW,
-                components: [
-                  {
-                    type: MessageComponentType.BUTTON,
-                    style: ButtonStyle.GREEN,
-                    label: 'Khôi Phục',
-                    custom_id: `${ButtonAction.RESTORE}:command:${id}`,
-                  },
-                ],
-              },
-            ],
-          }
-        );
+          ),
+          components: [
+            {
+              type: MessageComponentType.ACTION_ROW,
+              components: [
+                {
+                  type: MessageComponentType.BUTTON,
+                  style: ButtonStyle.GREEN,
+                  label: 'Khôi Phục',
+                  custom_id: `${ButtonAction.RESTORE}:command:${id}`,
+                },
+              ],
+            },
+          ],
+        });
       } else {
         this.logger.warn(`Delete not implemented for type: ${type}`);
       }
@@ -227,8 +245,8 @@ export class ListenerMessageButtonClicked {
         message,
         createReplyOptions(
           `❌ Lỗi: ${error.message}`,
-          createPreMarkdown(`❌ Lỗi: ${error.message}`)
-        )
+          createPreMarkdown(`❌ Lỗi: ${error.message}`),
+        ),
       );
     }
   }
@@ -239,28 +257,27 @@ export class ListenerMessageButtonClicked {
         await this.commandService.restore(parseInt(id));
         const command = await this.commandService.findById(parseInt(id));
 
-        await safeReply(
-          message,
-          {
-            ...createReplyOptions(
+        await safeReply(message, {
+          ...createReplyOptions(
+            `♻️ Đã khôi phục lệnh #${id} "${command.title}"\nSử dụng /command detail --id=${id} để xem chi tiết.`,
+            createPreMarkdown(
               `♻️ Đã khôi phục lệnh #${id} "${command.title}"\nSử dụng /command detail --id=${id} để xem chi tiết.`,
-              createPreMarkdown(`♻️ Đã khôi phục lệnh #${id} "${command.title}"\nSử dụng /command detail --id=${id} để xem chi tiết.`)
             ),
-            components: [
-              {
-                type: MessageComponentType.ACTION_ROW,
-                components: [
-                  {
-                    type: MessageComponentType.BUTTON,
-                    style: ButtonStyle.BLUE,
-                    label: 'Xem Chi Tiết',
-                    custom_id: `${ButtonAction.VIEW}:command:${id}`,
-                  },
-                ],
-              },
-            ],
-          }
-        );
+          ),
+          components: [
+            {
+              type: MessageComponentType.ACTION_ROW,
+              components: [
+                {
+                  type: MessageComponentType.BUTTON,
+                  style: ButtonStyle.BLUE,
+                  label: 'Xem Chi Tiết',
+                  custom_id: `${ButtonAction.VIEW}:command:${id}`,
+                },
+              ],
+            },
+          ],
+        });
       } else {
         this.logger.warn(`Restore not implemented for type: ${type}`);
       }
@@ -273,8 +290,8 @@ export class ListenerMessageButtonClicked {
         message,
         createReplyOptions(
           `❌ Lỗi: ${error.message}`,
-          createPreMarkdown(`❌ Lỗi: ${error.message}`)
-        )
+          createPreMarkdown(`❌ Lỗi: ${error.message}`),
+        ),
       );
     }
   }
@@ -292,9 +309,9 @@ export class ListenerMessageButtonClicked {
             createReplyOptions(
               `💡 Thêm giải pháp cho bug #${bug.id}: "${bug.title}"\n\nSử dụng lệnh sau để thêm giải pháp:\n/solution create --bug-id=${bug.id} --title="Tiêu đề giải pháp" --desc="Mô tả giải pháp" --code="Code giải pháp"`,
               createPreMarkdown(
-                `💡 Thêm giải pháp cho bug #${bug.id}: "${bug.title}"\n\nSử dụng lệnh sau để thêm giải pháp:\n/solution create --bug-id=${bug.id} --title="Tiêu đề giải pháp" --desc="Mô tả giải pháp" --code="Code giải pháp"`
-              )
-            )
+                `💡 Thêm giải pháp cho bug #${bug.id}: "${bug.title}"\n\nSử dụng lệnh sau để thêm giải pháp:\n/solution create --bug-id=${bug.id} --title="Tiêu đề giải pháp" --desc="Mô tả giải pháp" --code="Code giải pháp"`,
+              ),
+            ),
           );
           break;
         default:
@@ -309,8 +326,8 @@ export class ListenerMessageButtonClicked {
         message,
         createReplyOptions(
           `❌ Lỗi: ${error.message}`,
-          createPreMarkdown(`❌ Lỗi: ${error.message}`)
-        )
+          createPreMarkdown(`❌ Lỗi: ${error.message}`),
+        ),
       );
     }
   }
@@ -324,8 +341,8 @@ export class ListenerMessageButtonClicked {
         message,
         createReplyOptions(
           `🔍 Đang tìm kiếm cho "${query}"...`,
-          createPreMarkdown(`🔍 Đang tìm kiếm cho "${query}"...`)
-        )
+          createPreMarkdown(`🔍 Đang tìm kiếm cho "${query}"...`),
+        ),
       );
 
       if (type === 'all') {
@@ -344,8 +361,8 @@ export class ListenerMessageButtonClicked {
         message,
         createReplyOptions(
           `❌ Lỗi khi tìm kiếm: ${error.message}`,
-          createPreMarkdown(`❌ Lỗi khi tìm kiếm: ${error.message}`)
-        )
+          createPreMarkdown(`❌ Lỗi khi tìm kiếm: ${error.message}`),
+        ),
       );
     }
   }
@@ -470,8 +487,10 @@ export class ListenerMessageButtonClicked {
             message,
             createReplyOptions(
               'Chọn một loại hướng dẫn cụ thể (command, bug, solution).',
-              createPreMarkdown('Chọn một loại hướng dẫn cụ thể (command, bug, solution).')
-            )
+              createPreMarkdown(
+                'Chọn một loại hướng dẫn cụ thể (command, bug, solution).',
+              ),
+            ),
           );
       }
     } catch (error) {
@@ -480,8 +499,8 @@ export class ListenerMessageButtonClicked {
         message,
         createReplyOptions(
           `❌ Lỗi khi hiển thị hướng dẫn: ${error.message}`,
-          createPreMarkdown(`❌ Lỗi khi hiển thị hướng dẫn: ${error.message}`)
-        )
+          createPreMarkdown(`❌ Lỗi khi hiển thị hướng dẫn: ${error.message}`),
+        ),
       );
     }
   }

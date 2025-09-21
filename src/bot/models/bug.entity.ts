@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany,
+} from 'typeorm';
 import { Solution } from './solution.entity';
 
 export enum BugStatus {
@@ -25,17 +32,17 @@ export class Bug {
   @Column({ nullable: true, type: 'text' })
   description: string;
 
-  @Column({ 
-    type: 'enum', 
-    enum: BugStatus, 
-    default: BugStatus.OPEN 
+  @Column({
+    type: 'enum',
+    enum: BugStatus,
+    default: BugStatus.OPEN,
   })
   status: BugStatus;
 
-  @Column({ 
-    type: 'enum', 
-    enum: BugSeverity, 
-    default: BugSeverity.MEDIUM 
+  @Column({
+    type: 'enum',
+    enum: BugSeverity,
+    default: BugSeverity.MEDIUM,
   })
   severity: BugSeverity;
 

@@ -5,9 +5,16 @@ import { CommandService } from 'src/bot/services/command.service';
 import { MezonClientService } from 'src/mezon/services/mezon-client.service';
 import { getRandomColor } from 'src/bot/utils/helps';
 import { ButtonAction, MessageComponentType } from 'src/bot/constants/types';
-import { ActionRowComponent, ButtonComponent } from 'src/bot/constants/interfaces';
+import {
+  ActionRowComponent,
+  ButtonComponent,
+} from 'src/bot/constants/interfaces';
 import { parseArgs } from 'src/bot/utils/parse-args';
-import { safeReply, createReplyOptions, createPreMarkdown } from 'src/bot/utils/reply-helpers';
+import {
+  safeReply,
+  createReplyOptions,
+  createPreMarkdown,
+} from 'src/bot/utils/reply-helpers';
 
 @Command('command')
 export class CommandBotCommand extends CommandMessage {
@@ -54,8 +61,8 @@ export class CommandBotCommand extends CommandMessage {
         messageChannel,
         createReplyOptions(
           `❌ Lỗi: ${error.message}`,
-          createPreMarkdown(`❌ Lỗi: ${error.message}`)
-        )
+          createPreMarkdown(`❌ Lỗi: ${error.message}`),
+        ),
       );
     }
   }
@@ -67,38 +74,46 @@ export class CommandBotCommand extends CommandMessage {
         {
           color: getRandomColor(),
           title: 'DevHelper - Command Help',
-          description: 'Công cụ giúp bạn lưu trữ và quản lý các lệnh thường dùng:',
+          description:
+            'Công cụ giúp bạn lưu trữ và quản lý các lệnh thường dùng:',
           fields: [
             {
               name: '1️⃣ Xem danh sách lệnh',
-              value: '*command list --category="git"\n\nLiệt kê các lệnh trong danh mục (VD: git, docker).'
+              value:
+                '*command list --category="git"\n\nLiệt kê các lệnh trong danh mục (VD: git, docker).',
             },
             {
               name: '2️⃣ Tìm kiếm lệnh',
-              value: '*command find --query="stash"\n\nTìm các lệnh liên quan đến từ khóa.'
+              value:
+                '*command find --query="stash"\n\nTìm các lệnh liên quan đến từ khóa.',
             },
             {
               name: '3️⃣ Xem chi tiết lệnh',
-              value: '*command detail --id=125\n\nHiển thị đầy đủ thông tin của lệnh có ID 125.'
+              value:
+                '*command detail --id=125\n\nHiển thị đầy đủ thông tin của lệnh có ID 125.',
             },
             {
               name: '4️⃣ Lưu lệnh mới',
-              value: '*command save --title="git-stash" --command="git stash" --desc="Lưu thay đổi tạm thời" --category="git"\n\nThêm lệnh mới với tham số cơ bản.'
+              value:
+                '*command save --title="git-stash" --command="git stash" --desc="Lưu thay đổi tạm thời" --category="git"\n\nThêm lệnh mới với tham số cơ bản.',
             },
             {
               name: '5️⃣ Lưu lệnh với tham số và ví dụ',
-              value: '*command save --title="git-stash" --command="git stash" --category="git" --parameters=\'{"branch":"Tên nhánh"}\' --examples=\'["git stash apply"]\'\n\nLưu ý định dạng JSON đặc biệt cho parameters và examples.'
+              value:
+                '*command save --title="git-stash" --command="git stash" --category="git" --parameters=\'{"branch":"Tên nhánh"}\' --examples=\'["git stash apply"]\'\n\nLưu ý định dạng JSON đặc biệt cho parameters và examples.',
             },
             {
               name: '6️⃣ Quản lý lệnh đã lưu',
-              value: '*command update --id=125 --title="Tên mới"\n*command delete --id=125\n*command restore --id=125\n\nCập nhật, xóa hoặc khôi phục lệnh theo ID.'
+              value:
+                '*command update --id=125 --title="Tên mới"\n*command delete --id=125\n*command restore --id=125\n\nCập nhật, xóa hoặc khôi phục lệnh theo ID.',
             },
             {
               name: '📝 Lưu ý quan trọng',
-              value: '• Tham số bắt buộc khi tạo mới: `--title`, `--command` và `--category`\n\n' +
+              value:
+                '• Tham số bắt buộc khi tạo mới: `--title`, `--command` và `--category`\n\n' +
                 '• Với JSON, dùng ngoặc đơn bên ngoài, ngoặc kép bên trong: `\'{"key":"value"}\'`\n\n' +
-                '• Dùng `*command list` trước để biết ID các lệnh cần quản lý'
-            }
+                '• Dùng `*command list` trước để biết ID các lệnh cần quản lý',
+            },
           ],
           footer: {
             text: 'Gõ *command hoặc *command help để hiển thị hướng dẫn này',
@@ -108,7 +123,10 @@ export class CommandBotCommand extends CommandMessage {
     });
   }
 
-  private async handleSave(args: Record<string, string>, messageChannel: any): Promise<any> {
+  private async handleSave(
+    args: Record<string, string>,
+    messageChannel: any,
+  ): Promise<any> {
     const { title, command, desc, category, parameters, examples } = args;
 
     if (!title || !command || !category) {
@@ -116,8 +134,10 @@ export class CommandBotCommand extends CommandMessage {
         messageChannel,
         createReplyOptions(
           '❌ Thiếu thông tin: Vui lòng cung cấp --title, --command và --category.',
-          createPreMarkdown('❌ Thiếu thông tin: Vui lòng cung cấp --title, --command và --category.')
-        )
+          createPreMarkdown(
+            '❌ Thiếu thông tin: Vui lòng cung cấp --title, --command và --category.',
+          ),
+        ),
       );
     }
 
@@ -136,8 +156,10 @@ export class CommandBotCommand extends CommandMessage {
         messageChannel,
         createReplyOptions(
           `❌ Lỗi: Format JSON không hợp lệ cho parameters hoặc examples: ${error.message}`,
-          createPreMarkdown(`❌ Lỗi: Format JSON không hợp lệ cho parameters hoặc examples: ${error.message}`)
-        )
+          createPreMarkdown(
+            `❌ Lỗi: Format JSON không hợp lệ cho parameters hoặc examples: ${error.message}`,
+          ),
+        ),
       );
     }
 
@@ -152,7 +174,8 @@ export class CommandBotCommand extends CommandMessage {
 
     let parametersText = '';
     if (Object.keys(parsedParameters).length > 0) {
-      parametersText = '\nLệnh có ' + Object.keys(parsedParameters).length + ' tham số:\n';
+      parametersText =
+        '\nLệnh có ' + Object.keys(parsedParameters).length + ' tham số:\n';
       for (const [param, desc] of Object.entries(parsedParameters)) {
         parametersText += `• ${param}: ${desc}\n`;
       }
@@ -162,12 +185,17 @@ export class CommandBotCommand extends CommandMessage {
       messageChannel,
       createReplyOptions(
         `✅ Đã lưu lệnh! ID: ${newCommand.id}\n${parametersText}\nSử dụng /command detail --id=${newCommand.id} để xem chi tiết.`,
-        createPreMarkdown(`✅ Đã lưu lệnh! ID: ${newCommand.id}\n${parametersText}\nSử dụng /command detail --id=${newCommand.id} để xem chi tiết.`)
-      )
+        createPreMarkdown(
+          `✅ Đã lưu lệnh! ID: ${newCommand.id}\n${parametersText}\nSử dụng /command detail --id=${newCommand.id} để xem chi tiết.`,
+        ),
+      ),
     );
   }
 
-  private async handleList(args: Record<string, string>, messageChannel: any): Promise<any> {
+  private async handleList(
+    args: Record<string, string>,
+    messageChannel: any,
+  ): Promise<any> {
     const { category } = args;
 
     if (!category) {
@@ -175,8 +203,10 @@ export class CommandBotCommand extends CommandMessage {
         messageChannel,
         createReplyOptions(
           '❌ Thiếu thông tin: Vui lòng cung cấp --category.',
-          createPreMarkdown('❌ Thiếu thông tin: Vui lòng cung cấp --category.')
-        )
+          createPreMarkdown(
+            '❌ Thiếu thông tin: Vui lòng cung cấp --category.',
+          ),
+        ),
       );
     }
 
@@ -187,8 +217,10 @@ export class CommandBotCommand extends CommandMessage {
         messageChannel,
         createReplyOptions(
           `📋 Không tìm thấy lệnh nào trong danh mục "${category}".`,
-          createPreMarkdown(`📋 Không tìm thấy lệnh nào trong danh mục "${category}".`)
-        )
+          createPreMarkdown(
+            `📋 Không tìm thấy lệnh nào trong danh mục "${category}".`,
+          ),
+        ),
       );
     }
 
@@ -205,14 +237,14 @@ export class CommandBotCommand extends CommandMessage {
 
     return safeReply(
       messageChannel,
-      createReplyOptions(
-        listText,
-        createPreMarkdown(listText)
-      )
+      createReplyOptions(listText, createPreMarkdown(listText)),
     );
   }
 
-  private async handleDetail(args: Record<string, string>, messageChannel: any): Promise<any> {
+  private async handleDetail(
+    args: Record<string, string>,
+    messageChannel: any,
+  ): Promise<any> {
     const { id } = args;
 
     if (!id || isNaN(parseInt(id))) {
@@ -220,8 +252,10 @@ export class CommandBotCommand extends CommandMessage {
         messageChannel,
         createReplyOptions(
           '❌ Thiếu thông tin hoặc định dạng không hợp lệ: Vui lòng cung cấp --id (số).',
-          createPreMarkdown('❌ Thiếu thông tin hoặc định dạng không hợp lệ: Vui lòng cung cấp --id (số).')
-        )
+          createPreMarkdown(
+            '❌ Thiếu thông tin hoặc định dạng không hợp lệ: Vui lòng cung cấp --id (số).',
+          ),
+        ),
       );
     }
 
@@ -247,62 +281,62 @@ export class CommandBotCommand extends CommandMessage {
       const createdAt = new Date(command.createdAt);
       const timeAgo = this.getTimeAgo(createdAt);
 
-      return safeReply(
-        messageChannel,
-        {
-          embed: [
-            {
-              color: getRandomColor(),
-              title: `📝 Command #${command.id}: "${command.title}"`,
-              fields: [
-                {
-                  name: 'Danh mục',
-                  value: command.category,
-                },
-                {
-                  name: 'Mô tả',
-                  value: command.description || '*(Không có mô tả)*',
-                },
-                {
-                  name: 'Lệnh',
-                  value: '```\n' + command.command + '\n```',
-                },
-                {
-                  name: 'Tham số',
-                  value: parametersText,
-                },
-                {
-                  name: 'Ví dụ',
-                  value: examplesText,
-                },
-                {
-                  name: 'Trạng thái',
-                  value: command.deleted ? '🗑️ Đã xóa' : '✅ Hoạt động',
-                },
-                {
-                  name: 'Đã tạo',
-                  value: `${createdAt.toLocaleString()} (${timeAgo})`,
-                },
-              ],
-              footer: {
-                text: 'DevHelper Bot',
+      return safeReply(messageChannel, {
+        embed: [
+          {
+            color: getRandomColor(),
+            title: `📝 Command #${command.id}: "${command.title}"`,
+            fields: [
+              {
+                name: 'Danh mục',
+                value: command.category,
               },
+              {
+                name: 'Mô tả',
+                value: command.description || '*(Không có mô tả)*',
+              },
+              {
+                name: 'Lệnh',
+                value: '```\n' + command.command + '\n```',
+              },
+              {
+                name: 'Tham số',
+                value: parametersText,
+              },
+              {
+                name: 'Ví dụ',
+                value: examplesText,
+              },
+              {
+                name: 'Trạng thái',
+                value: command.deleted ? '🗑️ Đã xóa' : '✅ Hoạt động',
+              },
+              {
+                name: 'Đã tạo',
+                value: `${createdAt.toLocaleString()} (${timeAgo})`,
+              },
+            ],
+            footer: {
+              text: 'DevHelper Bot',
             },
-          ],
-        }
-      );
+          },
+        ],
+      });
     } catch (error) {
       return safeReply(
         messageChannel,
         createReplyOptions(
           `❌ Lỗi: ${error.message}`,
-          createPreMarkdown(`❌ Lỗi: ${error.message}`)
-        )
+          createPreMarkdown(`❌ Lỗi: ${error.message}`),
+        ),
       );
     }
   }
 
-  private async handleUpdate(args: Record<string, string>, messageChannel: any): Promise<any> {
+  private async handleUpdate(
+    args: Record<string, string>,
+    messageChannel: any,
+  ): Promise<any> {
     const { id, title, command, desc, category, parameters, examples } = args;
 
     if (!id || isNaN(parseInt(id))) {
@@ -310,8 +344,10 @@ export class CommandBotCommand extends CommandMessage {
         messageChannel,
         createReplyOptions(
           '❌ Thiếu thông tin hoặc định dạng không hợp lệ: Vui lòng cung cấp --id (số).',
-          createPreMarkdown('❌ Thiếu thông tin hoặc định dạng không hợp lệ: Vui lòng cung cấp --id (số).')
-        )
+          createPreMarkdown(
+            '❌ Thiếu thông tin hoặc định dạng không hợp lệ: Vui lòng cung cấp --id (số).',
+          ),
+        ),
       );
     }
 
@@ -332,8 +368,10 @@ export class CommandBotCommand extends CommandMessage {
             messageChannel,
             createReplyOptions(
               `❌ Lỗi: Format JSON không hợp lệ cho parameters: ${error.message}`,
-              createPreMarkdown(`❌ Lỗi: Format JSON không hợp lệ cho parameters: ${error.message}`)
-            )
+              createPreMarkdown(
+                `❌ Lỗi: Format JSON không hợp lệ cho parameters: ${error.message}`,
+              ),
+            ),
           );
         }
       }
@@ -346,8 +384,10 @@ export class CommandBotCommand extends CommandMessage {
             messageChannel,
             createReplyOptions(
               `❌ Lỗi: Format JSON không hợp lệ cho examples: ${error.message}`,
-              createPreMarkdown(`❌ Lỗi: Format JSON không hợp lệ cho examples: ${error.message}`)
-            )
+              createPreMarkdown(
+                `❌ Lỗi: Format JSON không hợp lệ cho examples: ${error.message}`,
+              ),
+            ),
           );
         }
       }
@@ -357,8 +397,8 @@ export class CommandBotCommand extends CommandMessage {
           messageChannel,
           createReplyOptions(
             '❌ Không có thông tin nào để cập nhật.',
-            createPreMarkdown('❌ Không có thông tin nào để cập nhật.')
-          )
+            createPreMarkdown('❌ Không có thông tin nào để cập nhật.'),
+          ),
         );
       }
 
@@ -381,21 +421,26 @@ export class CommandBotCommand extends CommandMessage {
         messageChannel,
         createReplyOptions(
           `✅ Đã cập nhật lệnh #${id}:\n\n${changesText}\nSử dụng /command detail --id=${id} để xem chi tiết.`,
-          createPreMarkdown(`✅ Đã cập nhật lệnh #${id}:\n\n${changesText}\nSử dụng /command detail --id=${id} để xem chi tiết.`)
-        )
+          createPreMarkdown(
+            `✅ Đã cập nhật lệnh #${id}:\n\n${changesText}\nSử dụng /command detail --id=${id} để xem chi tiết.`,
+          ),
+        ),
       );
     } catch (error) {
       return safeReply(
         messageChannel,
         createReplyOptions(
           `❌ Lỗi: ${error.message}`,
-          createPreMarkdown(`❌ Lỗi: ${error.message}`)
-        )
+          createPreMarkdown(`❌ Lỗi: ${error.message}`),
+        ),
       );
     }
   }
 
-  private async handleDelete(args: Record<string, string>, messageChannel: any): Promise<any> {
+  private async handleDelete(
+    args: Record<string, string>,
+    messageChannel: any,
+  ): Promise<any> {
     const { id } = args;
 
     if (!id || isNaN(parseInt(id))) {
@@ -403,8 +448,10 @@ export class CommandBotCommand extends CommandMessage {
         messageChannel,
         createReplyOptions(
           '❌ Thiếu thông tin hoặc định dạng không hợp lệ: Vui lòng cung cấp --id (số).',
-          createPreMarkdown('❌ Thiếu thông tin hoặc định dạng không hợp lệ: Vui lòng cung cấp --id (số).')
-        )
+          createPreMarkdown(
+            '❌ Thiếu thông tin hoặc định dạng không hợp lệ: Vui lòng cung cấp --id (số).',
+          ),
+        ),
       );
     }
 
@@ -416,21 +463,26 @@ export class CommandBotCommand extends CommandMessage {
         messageChannel,
         createReplyOptions(
           `🗑️ Đã xóa lệnh #${id} "${command.title}"\nSử dụng /command restore --id=${id} để khôi phục.`,
-          createPreMarkdown(`🗑️ Đã xóa lệnh #${id} "${command.title}"\nSử dụng /command restore --id=${id} để khôi phục.`)
-        )
+          createPreMarkdown(
+            `🗑️ Đã xóa lệnh #${id} "${command.title}"\nSử dụng /command restore --id=${id} để khôi phục.`,
+          ),
+        ),
       );
     } catch (error) {
       return safeReply(
         messageChannel,
         createReplyOptions(
           `❌ Lỗi: ${error.message}`,
-          createPreMarkdown(`❌ Lỗi: ${error.message}`)
-        )
+          createPreMarkdown(`❌ Lỗi: ${error.message}`),
+        ),
       );
     }
   }
 
-  private async handleRestore(args: Record<string, string>, messageChannel: any): Promise<any> {
+  private async handleRestore(
+    args: Record<string, string>,
+    messageChannel: any,
+  ): Promise<any> {
     const { id } = args;
 
     if (!id || isNaN(parseInt(id))) {
@@ -438,8 +490,10 @@ export class CommandBotCommand extends CommandMessage {
         messageChannel,
         createReplyOptions(
           '❌ Thiếu thông tin hoặc định dạng không hợp lệ: Vui lòng cung cấp --id (số).',
-          createPreMarkdown('❌ Thiếu thông tin hoặc định dạng không hợp lệ: Vui lòng cung cấp --id (số).')
-        )
+          createPreMarkdown(
+            '❌ Thiếu thông tin hoặc định dạng không hợp lệ: Vui lòng cung cấp --id (số).',
+          ),
+        ),
       );
     }
 
@@ -451,21 +505,26 @@ export class CommandBotCommand extends CommandMessage {
         messageChannel,
         createReplyOptions(
           `♻️ Đã khôi phục lệnh #${id} "${command.title}"\nSử dụng /command detail --id=${id} để xem chi tiết.`,
-          createPreMarkdown(`♻️ Đã khôi phục lệnh #${id} "${command.title}"\nSử dụng /command detail --id=${id} để xem chi tiết.`)
-        )
+          createPreMarkdown(
+            `♻️ Đã khôi phục lệnh #${id} "${command.title}"\nSử dụng /command detail --id=${id} để xem chi tiết.`,
+          ),
+        ),
       );
     } catch (error) {
       return safeReply(
         messageChannel,
         createReplyOptions(
           `❌ Lỗi: ${error.message}`,
-          createPreMarkdown(`❌ Lỗi: ${error.message}`)
-        )
+          createPreMarkdown(`❌ Lỗi: ${error.message}`),
+        ),
       );
     }
   }
 
-  private async handleFind(args: Record<string, string>, messageChannel: any): Promise<any> {
+  private async handleFind(
+    args: Record<string, string>,
+    messageChannel: any,
+  ): Promise<any> {
     const { query } = args;
 
     if (!query) {
@@ -473,8 +532,8 @@ export class CommandBotCommand extends CommandMessage {
         messageChannel,
         createReplyOptions(
           '❌ Thiếu thông tin: Vui lòng cung cấp --query.',
-          createPreMarkdown('❌ Thiếu thông tin: Vui lòng cung cấp --query.')
-        )
+          createPreMarkdown('❌ Thiếu thông tin: Vui lòng cung cấp --query.'),
+        ),
       );
     }
 
@@ -485,8 +544,8 @@ export class CommandBotCommand extends CommandMessage {
         messageChannel,
         createReplyOptions(
           `🔍 Không tìm thấy lệnh nào khớp với "${query}".`,
-          createPreMarkdown(`🔍 Không tìm thấy lệnh nào khớp với "${query}".`)
-        )
+          createPreMarkdown(`🔍 Không tìm thấy lệnh nào khớp với "${query}".`),
+        ),
       );
     }
 
@@ -497,16 +556,13 @@ export class CommandBotCommand extends CommandMessage {
     });
 
     listText += '\n📌 Để xem chi tiết, sử dụng:\n';
-    commands.slice(0, 5).forEach(cmd => {
+    commands.slice(0, 5).forEach((cmd) => {
       listText += `• /command detail --id=${cmd.id}\n`;
     });
 
     return safeReply(
       messageChannel,
-      createReplyOptions(
-        listText,
-        createPreMarkdown(listText)
-      )
+      createReplyOptions(listText, createPreMarkdown(listText)),
     );
   }
 
@@ -516,29 +572,31 @@ export class CommandBotCommand extends CommandMessage {
 
     let interval = Math.floor(seconds / 31536000);
     if (interval >= 1) {
-      return interval === 1 ? "1 năm trước" : `${interval} năm trước`;
+      return interval === 1 ? '1 năm trước' : `${interval} năm trước`;
     }
 
     interval = Math.floor(seconds / 2592000);
     if (interval >= 1) {
-      return interval === 1 ? "1 tháng trước" : `${interval} tháng trước`;
+      return interval === 1 ? '1 tháng trước' : `${interval} tháng trước`;
     }
 
     interval = Math.floor(seconds / 86400);
     if (interval >= 1) {
-      return interval === 1 ? "1 ngày trước" : `${interval} ngày trước`;
+      return interval === 1 ? '1 ngày trước' : `${interval} ngày trước`;
     }
 
     interval = Math.floor(seconds / 3600);
     if (interval >= 1) {
-      return interval === 1 ? "1 giờ trước" : `${interval} giờ trước`;
+      return interval === 1 ? '1 giờ trước' : `${interval} giờ trước`;
     }
 
     interval = Math.floor(seconds / 60);
     if (interval >= 1) {
-      return interval === 1 ? "1 phút trước" : `${interval} phút trước`;
+      return interval === 1 ? '1 phút trước' : `${interval} phút trước`;
     }
 
-    return Math.floor(seconds) === 0 ? "vừa xong" : `${Math.floor(seconds)} giây trước`;
+    return Math.floor(seconds) === 0
+      ? 'vừa xong'
+      : `${Math.floor(seconds)} giây trước`;
   }
 }

@@ -6,12 +6,12 @@ declare module 'mezon-sdk' {
     clans?: Map<string, Clan>;
     user?: User;
     on(event: string, listener: (...args: any[]) => void): this;
-    
+
     // Thêm các phương thức API trực tiếp có thể có
     sendMessage?(channelId: string, options: any): Promise<Message>;
     createMessage?(channelId: string, options: any): Promise<Message>;
     getChannel?(channelId: string): Promise<Channel>;
-    
+
     // Thêm phương thức destroy cho việc reset connection
     destroy?(): Promise<void>;
     disconnect?(): Promise<void>;
@@ -47,12 +47,12 @@ declare module 'mezon-sdk' {
     fetch(channelId: string): Promise<Channel>;
   }
 
-export interface MessageManager {
-  fetch(messageId: string): Promise<Message>;
-  create?(options: any): Promise<Message>; // Thêm phương thức create dạng optional
-  send?(options: any): Promise<Message>;   // Thêm phương thức send dạng optional
-  createMessage?(options: any): Promise<Message>; // Thêm phương thức thay thế
-}
+  export interface MessageManager {
+    fetch(messageId: string): Promise<Message>;
+    create?(options: any): Promise<Message>; // Thêm phương thức create dạng optional
+    send?(options: any): Promise<Message>; // Thêm phương thức send dạng optional
+    createMessage?(options: any): Promise<Message>; // Thêm phương thức thay thế
+  }
 
   export interface Message {
     id: string;
@@ -63,16 +63,16 @@ export interface MessageManager {
   }
 
   export interface ChannelMessage {
-  server_id?: string;
-  clan_id?: string;     // Thêm trường này để hỗ trợ cả cấu trúc cũ và mới
-  channel_id: string;
-  message_id: string;
-  sender_id: string;
-  content: {
-    t?: string;
-  };
-  code?: string;
-}
+    server_id?: string;
+    clan_id?: string; // Thêm trường này để hỗ trợ cả cấu trúc cũ và mới
+    channel_id: string;
+    message_id: string;
+    sender_id: string;
+    content: {
+      t?: string;
+    };
+    code?: string;
+  }
 
   export interface MessageButtonClicked {
     custom_id: string;
@@ -88,11 +88,11 @@ export interface MessageManager {
     ITALIC = 'ITALIC',
     UNDERLINE = 'UNDERLINE',
     STRIKE = 'STRIKE',
-    CODE = 'CODE'
+    CODE = 'CODE',
   }
 
   export enum Events {
     ChannelMessage = 'channelMessage',
-    MessageButtonClicked = 'messageButtonClicked'
+    MessageButtonClicked = 'messageButtonClicked',
   }
 }

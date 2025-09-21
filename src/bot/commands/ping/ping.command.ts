@@ -37,7 +37,8 @@ export class PingCommand extends CommandMessage {
           {
             type: EMarkdownType.PRE,
             s: 0,
-            e: `🏓 Pong! Bot đang hoạt động.\nKết nối với ${clanCount} clan.`.length,
+            e: `🏓 Pong! Bot đang hoạt động.\nKết nối với ${clanCount} clan.`
+              .length,
           },
         ],
       });
